@@ -8,14 +8,14 @@ const port = process.env.PORT || 3000;
 const razorpayKeyId = process.env.RAZORPAY_KEY_ID;
 const razorpayKeySecret = process.env.RAZORPAY_KEY_SECRET;
 const razorpayWebhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
-const plans = { Essential: 49900, Momentum: 79900, Velocity: 129900 };
+const plans = { 'Starter 20': 42400, 'Family 50': 52500, 'Power 100': 84700 };
 const pendingOrders = new Map();
 const mime = {'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'application/javascript; charset=utf-8'};
 const data = {
   customers: [
-    { name: 'Meera Sharma', email: 'meera@email.com', plan: 'Momentum', status: 'Active', renewal: '08 Aug 2026' },
-    { name: 'Rohan Patel', email: 'rohan@email.com', plan: 'Velocity', status: 'Active', renewal: '24 Jul 2026' },
-    { name: 'Anaya Singh', email: 'anaya@email.com', plan: 'Essential', status: 'Active', renewal: '01 Aug 2026' }
+    { name: 'Meera Sharma', email: 'meera@email.com', plan: 'Family 50', status: 'Active', renewal: '08 Aug 2026' },
+    { name: 'Rohan Patel', email: 'rohan@email.com', plan: 'Power 100', status: 'Active', renewal: '24 Jul 2026' },
+    { name: 'Anaya Singh', email: 'anaya@email.com', plan: 'Starter 20', status: 'Active', renewal: '01 Aug 2026' }
   ],
   payments: [],
   events: []
@@ -46,7 +46,7 @@ http.createServer(async (req, res) => {
   if (req.method === 'POST' && url.pathname === '/api/checkout') {
     try {
       const {plan, price, address, email, paymentMethod} = await body(req);
-      if (!['Essential','Momentum','Velocity'].includes(plan) || !Number.isInteger(Number(price)) || Number(price) < 1 || typeof address !== 'string' || address.trim().length < 5 || !/^\S+@\S+\.\S+$/.test(email || '')) return send(res, 400, {error:'Please provide valid subscription details.'});
+      if (!plans[plan] || !Number.isInteger(Number(price)) || Number(price) < 1 || typeof address !== 'string' || address.trim().length < 5 || !/^\S+@\S+\.\S+$/.test(email || '')) return send(res, 400, {error:'Please provide valid subscription details.'});
       // In production, create a provider payment intent here. Never accept raw card data in this app.
       const reference = `NV-${crypto.randomInt(10000,99999)}`;
       const renewal = new Date(Date.now() + 30*86400000).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'});
@@ -64,4 +64,4 @@ http.createServer(async (req, res) => {
   const file = path.join(__dirname, safePath);
   if (!file.startsWith(__dirname)) return send(res, 403, 'Forbidden', 'text/plain');
   fs.readFile(file, (err, content) => err ? send(res, 404, 'Not found', 'text/plain') : send(res, 200, content, mime[path.extname(file)] || 'application/octet-stream'));
-}).listen(port, () => console.log(`NovaNet demo running at http://localhost:${port}`));
+}).listen(port, () => console.log(`Sai Shradha Fibre demo running at http://localhost:${port}`));

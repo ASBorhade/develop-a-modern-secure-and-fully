@@ -33,10 +33,12 @@ CREATE TABLE IF NOT EXISTS plans (
 );
 
 INSERT INTO plans (slug, name, speed_mbps, price_paise, duration_days) VALUES
-  ('essential', 'Essential', 100, 49900, 30),
-  ('momentum', 'Momentum', 300, 79900, 30),
-  ('velocity', 'Velocity', 1000, 129900, 30)
+  ('starter-20', 'Starter 20', 20, 42373, 30),
+  ('family-50', 'Family 50', 50, 52542, 30),
+  ('power-100', 'Power 100', 100, 84745, 30)
 ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, speed_mbps = EXCLUDED.speed_mbps, price_paise = EXCLUDED.price_paise, duration_days = EXCLUDED.duration_days;
+
+UPDATE plans SET active = false WHERE slug IN ('essential', 'momentum', 'velocity');
 
 CREATE TABLE IF NOT EXISTS payments (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
